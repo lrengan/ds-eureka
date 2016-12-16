@@ -116,6 +116,7 @@ energy = pd.DataFrame()
 GDP = pd.DataFrame()
 ScimEn = pd.DataFrame()
 
+
 def load_energy_data():
     # load the Energy Indicators data
 
@@ -125,7 +126,7 @@ def load_energy_data():
     # "United States of America": "United States",
     # "United Kingdom of Great Britain and Northern Ireland": "United Kingdom",
     # "China, Hong Kong Special Administrative Region": "Hong Kong"```
-    # remove text in paranthesis `'Bolivia (Plurinational State of)'` should be `'Bolivia'`
+    # remove text in parentheses `'Bolivia (Plurinational State of)'` should be `'Bolivia'`
 
     ######
     # Tell Python that we are going to refer to the global variable energy
@@ -158,7 +159,7 @@ def load_energy_data():
     pcn_list = energy[energy['Country'].str.contains("\(")].index.values.tolist()
     # generate a list of tuples (index_value, country_name_with_text_in_paran_removed)
     ctlist = [(cidx, (re.sub(r'\([^()]*\)', '', energy.loc[cidx, 'Country']).rstrip())) for cidx in pcn_list]
-    # replace country names with paranthesis with their names with text in paran removed
+    # replace country names with parentheses with their names with text in paran removed
     for c in ctlist:
         energy.loc[c[0], 'Country'] = c[1]
         # end for ctlist
@@ -187,6 +188,7 @@ def load_GDP_data():
     # "Hong Kong SAR, China": "Hong Kong"
     hk_idx = GDP[GDP['Country Name'] == 'Hong Kong SAR, China'].index.values[0]
     GDP.loc[hk_idx, 'Country Name'] = 'Hong Kong'
+
 
 # end load_GDP_data()
 
