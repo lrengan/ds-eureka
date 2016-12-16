@@ -2,21 +2,31 @@
 
 # ---
 # 
-# _You are currently looking at **version 1.2** of this notebook. To download notebooks and datafiles, as well as get help on Jupyter notebooks in the Coursera platform, visit the [Jupyter Notebook FAQ](https://www.coursera.org/learn/python-data-analysis/resources/0dhYG) course resource._
+# _You are currently looking at **version 1.2** of this notebook. To download notebooks and datafiles, as well as get
+#  help on Jupyter notebooks in the Coursera platform, visit the [Jupyter Notebook FAQ](
+# https://www.coursera.org/learn/python-data-analysis/resources/0dhYG) course resource._
 # 
 # ---
 
-# # Assignment 3 - More Pandas
-# All questions are weighted the same in this assignment. This assignment requires more individual learning then the last one did - you are encouraged to check out the [pandas documentation](http://pandas.pydata.org/pandas-docs/stable/) to find functions or methods you might not have used yet, or ask questions on [Stack Overflow](http://stackoverflow.com/) and tag them as pandas and python related. And of course, the discussion forums are open for interaction with your peers and the course staff.
+# # Assignment 3 - More Pandas All questions are weighted the same in this assignment. This assignment requires more
+# individual learning then the last one did - you are encouraged to check out the [pandas documentation](
+# http://pandas.pydata.org/pandas-docs/stable/) to find functions or methods you might not have used yet,
+# or ask questions on [Stack Overflow](http://stackoverflow.com/) and tag them as pandas and python related. And of
+# course, the discussion forums are open for interaction with your peers and the course staff.
 
-# ### Question 1 (20%)
-# Load the energy data from the file `Energy Indicators.xls`, which is a list of indicators of [energy supply and renewable electricity production](Energy%20Indicators.xls) from the [United Nations](http://unstats.un.org/unsd/environment/excel_file_tables/2013/Energy%20Indicators.xls) for the year 2013, and should be put into a DataFrame with the variable name of **energy**.
+# ### Question 1 (20%) Load the energy data from the file `Energy Indicators.xls`, which is a list of indicators of [
+# energy supply and renewable electricity production](Energy%20Indicators.xls) from the [United Nations](
+# http://unstats.un.org/unsd/environment/excel_file_tables/2013/Energy%20Indicators.xls) for the year 2013,
+# and should be put into a DataFrame with the variable name of **energy**.
 # 
-# Keep in mind that this is an Excel file, and not a comma separated values file. Also, make sure to exclude the footer and header information from the datafile. The first two columns are unneccessary, so you should get rid of them, and you should change the column labels so that the columns are:
+# Keep in mind that this is an Excel file, and not a comma separated values file. Also, make sure to exclude the
+# footer and header information from the datafile. The first two columns are unneccessary, so you should get rid of
+# them, and you should change the column labels so that the columns are:
 # 
 # `['Country', 'Energy Supply', 'Energy Supply per Capita', '% Renewable]`
 # 
-# Convert `Energy Supply` to gigajoules (there are 1,000,000 gigajoules in a petajoule). For all countries which have missing data (e.g. data with "...") make sure this is reflected as `np.NaN` values.
+# Convert `Energy Supply` to gigajoules (there are 1,000,000 gigajoules in a petajoule). For all countries which have
+#  missing data (e.g. data with "...") make sure this is reflected as `np.NaN` values.
 # 
 # Rename the following list of countries (for use in later questions):
 # 
@@ -25,12 +35,55 @@
 # "United Kingdom of Great Britain and Northern Ireland": "United Kingdom",
 # "China, Hong Kong Special Administrative Region": "Hong Kong"```
 # 
-# There are also several countries with parenthesis in their name. Be sure to remove these, e.g. `'Bolivia (Plurinational State of)'` should be `'Bolivia'`.
+# There are also several countries with parenthesis in their name. Be sure to remove these, e.g. `'Bolivia (
+# Plurinational State of)'` should be `'Bolivia'`.
 # 
 # <br>
 # 
-# Next, load the GDP data from the file `world_bank.csv`, which is a csv containing countries' GDP from 1960 to 2015 from [World Bank](http://data.worldbank.org/indicator/NY.GDP.MKTP.CD). Call this DataFrame **GDP**. 
-# 
+# Next, load the GDP data from the file `world_bank.csv`, which is a csv containing countries' GDP from 1960 to 2015
+# from [World Bank](http://data.worldbank.org/indicator/NY.GDP.MKTP.CD). Call this DataFrame **GDP**. # ---
+#
+# _You are currently looking at **version 1.2** of this notebook. To download notebooks and datafiles, as well as get
+#  help on Jupyter notebooks in the Coursera platform, visit the [Jupyter Notebook FAQ](
+# https://www.coursera.org/learn/python-data-analysis/resources/0dhYG) course resource._
+#
+# ---
+
+# # Assignment 3 - More Pandas All questions are weighted the same in this assignment. This assignment requires more
+# individual learning then the last one did - you are encouraged to check out the [pandas documentation](
+# http://pandas.pydata.org/pandas-docs/stable/) to find functions or methods you might not have used yet,
+# or ask questions on [Stack Overflow](http://stackoverflow.com/) and tag them as pandas and python related. And of
+# course, the discussion forums are open for interaction with your peers and the course staff.
+
+# ### Question 1 (20%) Load the energy data from the file `Energy Indicators.xls`, which is a list of indicators of [
+# energy supply and renewable electricity production](Energy%20Indicators.xls) from the [United Nations](
+# http://unstats.un.org/unsd/environment/excel_file_tables/2013/Energy%20Indicators.xls) for the year 2013,
+# and should be put into a DataFrame with the variable name of **energy**.
+#
+# Keep in mind that this is an Excel file, and not a comma separated values file. Also, make sure to exclude the
+# footer and header information from the datafile. The first two columns are unneccessary, so you should get rid of
+# them, and you should change the column labels so that the columns are:
+#
+# `['Country', 'Energy Supply', 'Energy Supply per Capita', '% Renewable]`
+#
+# Convert `Energy Supply` to gigajoules (there are 1,000,000 gigajoules in a petajoule). For all countries which have
+#  missing data (e.g. data with "...") make sure this is reflected as `np.NaN` values.
+#
+# Rename the following list of countries (for use in later questions):
+#
+# ```"Republic of Korea": "South Korea",
+# "United States of America": "United States",
+# "United Kingdom of Great Britain and Northern Ireland": "United Kingdom",
+# "China, Hong Kong Special Administrative Region": "Hong Kong"```
+#
+# There are also several countries with parenthesis in their name. Be sure to remove these, e.g. `'Bolivia (
+# Plurinational State of)'` should be `'Bolivia'`.
+#
+# <br>
+#
+# Next, load the GDP data from the file `world_bank.csv`, which is a csv containing countries' GDP from 1960 to 2015
+# from [World Bank](http://data.worldbank.org/indicator/NY.GDP.MKTP.CD). Call this DataFrame **GDP**.
+#
 # Make sure to skip the header, and rename the following list of countries:
 # 
 # ```"Korea, Rep.": "South Korea", 
@@ -39,14 +92,17 @@
 # 
 # <br>
 # 
-# Finally, load the [Sciamgo Journal and Country Rank data for Energy Engineering and Power Technology](http://www.scimagojr.com/countryrank.php?category=2102) from the file `scimagojr-3.xlsx`, which ranks countries based on their journal contributions in the aforementioned area. Call this DataFrame **ScimEn**.
+# Finally, load the [Sciamgo Journal and Country Rank data for Energy Engineering and Power Technology](
+# http://www.scimagojr.com/countryrank.php?category=2102) from the file `scimagojr-3.xlsx`, which ranks countries
+# based on their journal contributions in the aforementioned area. Call this DataFrame **ScimEn**.
 # 
-# Join the three datasets: GDP, Energy, and ScimEn into a new dataset (using the intersection of country names). Use only the last 10 years (2006-2015) of GDP data and only the top 15 countries by Scimagojr 'Rank' (Rank 1 through 15). 
+# Join the three datasets: GDP, Energy, and ScimEn into a new dataset (using the intersection of country names). Use
+# only the last 10 years (2006-2015) of GDP data and only the top 15 countries by Scimagojr 'Rank' (Rank 1 through 15).
 # 
-# The index of this DataFrame should be the name of the country, and the columns should be ['Rank', 'Documents', 'Citable documents', 'Citations', 'Self-citations',
-#        'Citations per document', 'H index', 'Energy Supply',
-#        'Energy Supply per Capita', '% Renewable', '2006', '2007', '2008',
-#        '2009', '2010', '2011', '2012', '2013', '2014', '2015'].
+# The index of this DataFrame should be the name of the country, and the columns should be ['Rank', 'Documents',
+# 'Citable documents', 'Citations', 'Self-citations', 'Citations per document', 'H index', 'Energy Supply',
+# 'Energy Supply per Capita', '% Renewable', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014',
+# '2015'].
 # 
 # *This function should return a DataFrame with 20 columns and 15 entries.*
 
@@ -133,7 +189,6 @@ def load_GDP_data():
     hk_idx = GDP[GDP['Country Name'] == 'Hong Kong SAR, China'].index.values[0]
     GDP.loc[hk_idx, 'Country Name'] = 'Hong Kong'
 
-
 # end load_GDP_data()
 
 
@@ -152,14 +207,19 @@ def answer_one():
     return "ANSWER"
 
 
-# ### Question 2 (6.6%)
-# The previous question joined three datasets then reduced this to just the top 15 entries. When you joined the datasets, but before you reduced this to the top 15 items, how many entries did you lose?
+# ### Question 2 (6.6%) The previous question joined three datasets then reduced this to just the top 15 entries.
+# When you joined the datasets, but before you reduced this to the top 15 items, how many entries did you lose?
 # 
 # *This function should return a single number.*
 
 # In[1]:
 
-# get_ipython().run_cell_magic('HTML', '', '<svg width="800" height="300">\n  <circle cx="150" cy="180" r="80" fill-opacity="0.2" stroke="black" stroke-width="2" fill="blue" />\n  <circle cx="200" cy="100" r="80" fill-opacity="0.2" stroke="black" stroke-width="2" fill="red" />\n  <circle cx="100" cy="100" r="80" fill-opacity="0.2" stroke="black" stroke-width="2" fill="green" />\n  <line x1="150" y1="125" x2="300" y2="150" stroke="black" stroke-width="2" fill="black" stroke-dasharray="5,3"/>\n  <text  x="300" y="165" font-family="Verdana" font-size="35">Everything but this!</text>\n</svg>')
+# get_ipython().run_cell_magic('HTML', '', '<svg width="800" height="300">\n  <circle cx="150" cy="180" r="80"
+# fill-opacity="0.2" stroke="black" stroke-width="2" fill="blue" />\n  <circle cx="200" cy="100" r="80"
+# fill-opacity="0.2" stroke="black" stroke-width="2" fill="red" />\n  <circle cx="100" cy="100" r="80"
+# fill-opacity="0.2" stroke="black" stroke-width="2" fill="green" />\n  <line x1="150" y1="125" x2="300" y2="150"
+# stroke="black" stroke-width="2" fill="black" stroke-dasharray="5,3"/>\n  <text  x="300" y="165"
+# font-family="Verdana" font-size="35">Everything but this!</text>\n</svg>')
 
 
 # In[ ]:
@@ -171,7 +231,8 @@ def answer_two():
 # ### Question 3 (6.6%)
 # What are the top 15 countries for average GDP over the last 10 years?
 # 
-# *This function should return a Series named `avgGDP` with 15 countries and their average GDP sorted in descending order.*
+# *This function should return a Series named `avgGDP` with 15 countries and their average GDP sorted in descending
+# order.*
 
 # In[ ]:
 
