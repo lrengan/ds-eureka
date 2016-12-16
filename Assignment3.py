@@ -116,7 +116,6 @@ energy = pd.DataFrame()
 GDP = pd.DataFrame()
 ScimEn = pd.DataFrame()
 
-
 def load_energy_data():
     # load the Energy Indicators data
 
