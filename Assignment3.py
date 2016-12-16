@@ -142,7 +142,7 @@ def load_energy_data():
     energy.columns = ['Country', 'Energy Supply', 'Energy Supply per Capita', '% Renewable']
 
     # Convert `Energy Supply` to gigajoules; 1 PJ = 1000000 GJ
-    energy['Energy Supply'] = energy['Energy Supply'] * 1000000
+    energy['Energy Supply'] *= 1000000
 
     # rename countries
     korea_idx = energy[energy['Country'] == 'Republic of Korea'].index.values[0]
