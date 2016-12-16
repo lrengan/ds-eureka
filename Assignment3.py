@@ -1,4 +1,3 @@
-
 # coding: utf-8
 
 # ---
@@ -64,31 +63,31 @@ ScimEn = pd.DataFrame()
 
 def load_energy_data():
     # load the Energy Indicators data
-    
+
     # missing data (e.g. data with "...") make sure this is reflected as `np.NaN` values.
     # Rename the following list of countries (for use in later questions):
-        # ```"Republic of Korea": "South Korea",
-        # "United States of America": "United States",
-        # "United Kingdom of Great Britain and Northern Ireland": "United Kingdom",
-        # "China, Hong Kong Special Administrative Region": "Hong Kong"```
+    # ```"Republic of Korea": "South Korea",
+    # "United States of America": "United States",
+    # "United Kingdom of Great Britain and Northern Ireland": "United Kingdom",
+    # "China, Hong Kong Special Administrative Region": "Hong Kong"```
     # remove text in paranthesis `'Bolivia (Plurinational State of)'` should be `'Bolivia'`
-    
+
     ######
     # Tell Python that we are going to refer to the global variable energy
     global energy
     # exclude footer and header, and replace '...' with np.NaN
     # TODO: check if read_excel the NaN that read_excel uses is numpy's NaN
-    energy = pd.read_excel('Energy Indicators.xls', skiprows=range(17), skipfooter=38, na_values='...') 
-    
+    energy = pd.read_excel('Energy Indicators.xls', skiprows=range(17), skipfooter=38, na_values='...')
+
     # drop the first two columns
     energy.drop(energy.columns[[0, 1]], axis=1, inplace=True)
-    
+
     # rename columns
-    energy.columns=['Country', 'Energy Supply', 'Energy Supply per Capita', '% Renewable']
-    
+    energy.columns = ['Country', 'Energy Supply', 'Energy Supply per Capita', '% Renewable']
+
     # Convert `Energy Supply` to gigajoules; 1 PJ = 1000000 GJ
     energy['Energy Supply'] = energy['Energy Supply'] * 1000000
-    
+
     # rename countries
     korea_idx = energy[energy['Country'] == 'Republic of Korea'].index.values[0]
     energy.loc[korea_idx, 'Country'] = 'South Korea'
@@ -98,22 +97,22 @@ def load_energy_data():
     energy.loc[uk_idx, 'Country'] = 'United Kingdom'
     hk_idx = energy[energy['Country'] == 'China, Hong Kong Special Administrative Region3'].index.values[0]
     energy.loc[hk_idx, 'Country'] = 'Hong Kong'
-    
-    
+
     # remove text in paranthesis in country names
     # generate a list of country names that has a '(" in its name
     pcn_list = energy[energy['Country'].str.contains("\(")].index.values.tolist()
     # generate a list of tuples (index_value, country_name_with_text_in_paran_removed)
-    ctlist = [ (cidx, (re.sub(r'\([^()]*\)', '', energy.loc[cidx, 'Country']).rstrip() ) ) for cidx in pcn_list]
+    ctlist = [(cidx, (re.sub(r'\([^()]*\)', '', energy.loc[cidx, 'Country']).rstrip())) for cidx in pcn_list]
     # replace country names with paranthesis with their names with text in paran removed
     for c in ctlist:
-        energy.loc[c[0],'Country'] = c[1]
-    # end for ctlist
-    
-    #print(energy.head())
-    #print(energy.tail())
+        energy.loc[c[0], 'Country'] = c[1]
+        # end for ctlist
 
-# end load_energy_data()    
+        # print(energy.head())
+        # print(energy.tail())
+
+
+# end load_energy_data()
 
 
 # GDP data
@@ -122,7 +121,7 @@ def load_GDP_data():
     # Tell Python that we are referring to the global GDB dataframe variable
     global GDP
     # read in the data and skip the header (first 4 rows)
-    GDP = pd.read_csv('world_bank.csv',skiprows=range(4))
+    GDP = pd.read_csv('world_bank.csv', skiprows=range(4))
     # rename countries
     # "Korea, Rep.": "South Korea", 
     korea_idx = GDP[GDP['Country Name'] == 'Korea, Rep.'].index.values[0]
@@ -133,7 +132,8 @@ def load_GDP_data():
     # "Hong Kong SAR, China": "Hong Kong"
     hk_idx = GDP[GDP['Country Name'] == 'Hong Kong SAR, China'].index.values[0]
     GDP.loc[hk_idx, 'Country Name'] = 'Hong Kong'
-    
+
+
 # end load_GDP_data()
 
 
@@ -144,9 +144,10 @@ def load_ScimEn_data():
     global ScimEn
     ScimEn = pd.read_excel('scimagojr-3.xlsx')
     print(ScimEn.head())
-    
-#end load_ScimEn_data()
-    
+
+
+# end load_ScimEn_data()
+
 def answer_one():
     return "ANSWER"
 
@@ -158,7 +159,7 @@ def answer_one():
 
 # In[1]:
 
-#get_ipython().run_cell_magic('HTML', '', '<svg width="800" height="300">\n  <circle cx="150" cy="180" r="80" fill-opacity="0.2" stroke="black" stroke-width="2" fill="blue" />\n  <circle cx="200" cy="100" r="80" fill-opacity="0.2" stroke="black" stroke-width="2" fill="red" />\n  <circle cx="100" cy="100" r="80" fill-opacity="0.2" stroke="black" stroke-width="2" fill="green" />\n  <line x1="150" y1="125" x2="300" y2="150" stroke="black" stroke-width="2" fill="black" stroke-dasharray="5,3"/>\n  <text  x="300" y="165" font-family="Verdana" font-size="35">Everything but this!</text>\n</svg>')
+# get_ipython().run_cell_magic('HTML', '', '<svg width="800" height="300">\n  <circle cx="150" cy="180" r="80" fill-opacity="0.2" stroke="black" stroke-width="2" fill="blue" />\n  <circle cx="200" cy="100" r="80" fill-opacity="0.2" stroke="black" stroke-width="2" fill="red" />\n  <circle cx="100" cy="100" r="80" fill-opacity="0.2" stroke="black" stroke-width="2" fill="green" />\n  <line x1="150" y1="125" x2="300" y2="150" stroke="black" stroke-width="2" fill="black" stroke-dasharray="5,3"/>\n  <text  x="300" y="165" font-family="Verdana" font-size="35">Everything but this!</text>\n</svg>')
 
 
 # In[ ]:
@@ -262,7 +263,7 @@ def answer_nine():
 def plot9():
     import matplotlib as plt
     get_ipython().magic('matplotlib inline')
-    
+
     Top15 = answer_one()
     Top15['PopEst'] = Top15['Energy Supply'] / Top15['Energy Supply per Capita']
     Top15['Citable docs per Capita'] = Top15['Citable documents'] / Top15['PopEst']
@@ -271,7 +272,7 @@ def plot9():
 
 # In[ ]:
 
-#plot9() # Be sure to comment out plot9() before submitting the assignment!
+# plot9() # Be sure to comment out plot9() before submitting the assignment!
 
 
 # ### Question 10 (6.6%)
@@ -352,18 +353,17 @@ def plot_optional():
     import matplotlib as plt
     get_ipython().magic('matplotlib inline')
     Top15 = answer_one()
-    ax = Top15.plot(x='Rank', y='% Renewable', kind='scatter', 
-                    c=['#e41a1c','#377eb8','#e41a1c','#4daf4a','#4daf4a','#377eb8','#4daf4a','#e41a1c',
-                       '#4daf4a','#e41a1c','#4daf4a','#4daf4a','#e41a1c','#dede00','#ff7f00'], 
-                    xticks=range(1,16), s=6*Top15['2014']/10**10, alpha=.75, figsize=[16,6]);
+    ax = Top15.plot(x='Rank', y='% Renewable', kind='scatter',
+                    c=['#e41a1c', '#377eb8', '#e41a1c', '#4daf4a', '#4daf4a', '#377eb8', '#4daf4a', '#e41a1c',
+                       '#4daf4a', '#e41a1c', '#4daf4a', '#4daf4a', '#e41a1c', '#dede00', '#ff7f00'],
+                    xticks=range(1, 16), s=6 * Top15['2014'] / 10 ** 10, alpha=.75, figsize=[16, 6]);
 
     for i, txt in enumerate(Top15.index):
         ax.annotate(txt, [Top15['Rank'][i], Top15['% Renewable'][i]], ha='center')
 
-    print("This is an example of a visualization that can be created to help understand the data. This is a bubble chart showing % Renewable vs. Rank. The size of the bubble corresponds to the countries' 2014 GDP, and the color corresponds to the continent.")
-
+    print(
+        "This is an example of a visualization that can be created to help understand the data. This is a bubble chart showing % Renewable vs. Rank. The size of the bubble corresponds to the countries' 2014 GDP, and the color corresponds to the continent.")
 
 # In[ ]:
 
-#plot_optional() # Be sure to comment out plot_optional() before submitting the assignment!
-
+# plot_optional() # Be sure to comment out plot_optional() before submitting the assignment!
