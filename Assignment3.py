@@ -423,7 +423,9 @@ def plot_optional():
         ax.annotate(txt, [Top15['Rank'][i], Top15['% Renewable'][i]], ha='center')
 
     print(
-        "This is an example of a visualization that can be created to help understand the data. This is a bubble chart showing % Renewable vs. Rank. The size of the bubble corresponds to the countries' 2014 GDP, and the color corresponds to the continent.")
+        "This is an example of a visualization that can be created to help understand the data. This is a bubble "
+        "chart showing % Renewable vs. Rank. The size of the bubble corresponds to the countries' 2014 GDP, "
+        "and the color corresponds to the continent.")
 
 # In[ ]:
 
