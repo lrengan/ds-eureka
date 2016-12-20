@@ -177,10 +177,6 @@ def load_energy_data():
         energy.loc[c[0], 'Country'] = c[1]
         # end for ctlist
 
-        # print(energy.head())
-        # print(energy.tail())
-
-
 # end load_energy_data()
 
 
