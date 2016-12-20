@@ -132,7 +132,7 @@ def load_energy_data():
     # Tell Python that we are going to refer to the global variable energy
     global energy
     # exclude footer and header, and replace '...' with np.NaN
-    # TODO: check if read_excel the NaN that read_excel uses is numpy's NaN
+    # TODO: check if the NaN that read_excel uses is numpy's NaN
     energy = pd.read_excel('Energy Indicators.xls', skiprows=range(17), skipfooter=38, na_values='...')
 
     # drop the first two columns
@@ -153,6 +153,19 @@ def load_energy_data():
     energy.loc[uk_idx, 'Country'] = 'United Kingdom'
     hk_idx = energy[energy['Country'] == 'China, Hong Kong Special Administrative Region3'].index.values[0]
     energy.loc[hk_idx, 'Country'] = 'Hong Kong'
+    # Fix names in energy Australia1, China2, France6, Italy9, Japan10, Spain16
+    tmp_idx = energy[energy['Country'] == 'Australia1'].index.values[0]
+    energy.loc[tmp_idx, 'Country'] = 'Australia'
+    tmp_idx = energy[energy['Country'] == 'China2'].index.values[0]
+    energy.loc[tmp_idx, 'Country'] = 'China'
+    tmp_idx = energy[energy['Country'] == 'France6'].index.values[0]
+    energy.loc[tmp_idx, 'Country'] = 'France'
+    tmp_idx = energy[energy['Country'] == 'Italy9'].index.values[0]
+    energy.loc[tmp_idx, 'Country'] = 'Italy'
+    tmp_idx = energy[energy['Country'] == 'Japan10'].index.values[0]
+    energy.loc[tmp_idx, 'Country'] = 'Japan'
+    tmp_idx = energy[energy['Country'] == 'Spain16'].index.values[0]
+    energy.loc[tmp_idx, 'Country'] = 'Spain'
 
     # remove text in paranthesis in country names
     # generate a list of country names that has a '(" in its name
@@ -199,13 +212,32 @@ def load_ScimEn_data():
     # Tell Python that we are referring to the global ScimEn datafram variable
     global ScimEn
     ScimEn = pd.read_excel('scimagojr-3.xlsx')
-    print(ScimEn.head())
+    # print(ScimEn.head())
 
 
 # end load_ScimEn_data()
 
 def answer_one():
-    return "ANSWER"
+    # load all data
+    load_energy_data()
+    load_GDP_data()
+    load_ScimEn_data()
+
+    sci_df = ScimEn.nsmallest(n=15, columns='Rank')
+    sci_df.set_index(keys='Country', inplace=True)
+
+    col_list = ['Country Name'] + [str(i) for i in range(2006, 2016)]
+    gdp_df = GDP[col_list]
+    gdp_df.set_index(keys='Country Name', inplace=True)
+
+    energy_df = energy.set_index(keys='Country')
+
+    # inner merge
+    sci_energy_df = pd.merge(sci_df, energy_df, how='inner', left_index=True, right_index=True)
+    sci_energy_gdp_df = pd.merge(sci_energy_df, gdp_df, how='inner', left_index=True, right_index=True)
+
+    # print(sci_energy_gdp_df.head(20))
+    return sci_energy_gdp_df
 
 
 # ### Question 2 (6.6%) The previous question joined three datasets then reduced this to just the top 15 entries.
