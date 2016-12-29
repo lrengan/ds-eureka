@@ -235,6 +235,8 @@ def load_energy_data():
         # end for ctlist
 
     return energy
+
+
 # end load_energy_data()
 
 
@@ -254,6 +256,8 @@ def load_GDP_data():
     GDP.loc[hk_idx, 'Country Name'] = 'Hong Kong'
 
     return GDP
+
+
 # end load_GDP_data()
 
 
@@ -263,6 +267,8 @@ def load_ScimEn_data():
     # print(ScimEn.head())
 
     return ScimEn
+
+
 # end load_ScimEn_data()
 
 
@@ -279,6 +285,8 @@ def validate_clean_up():
     eingins = eing.intersection(scn_s)
     print(len(eugus), len(eingins))
     return True
+
+
 # end validate_clean_up()
 
 
@@ -387,6 +395,7 @@ def answer_three():
     ggsorted = gg.sort_values(na_position='last', ascending=False)
     return ggsorted
 
+
 # ### Question 4 (6.6%)
 # By how much had the GDP changed over the 10 year span for the country with the 6th largest average GDP?
 # 
@@ -466,6 +475,7 @@ def answer_eight():
     pps = pop.sort_values(ascending=False)
     return pps.index[2]
 
+
 # ### Question 9 Create a column that estimates the number of citable documents per person. What is the correlation
 # between the number of citable documents per capita and the energy supply per capita? Use the `.corr()` method,
 # (Pearson's correlation).
@@ -482,6 +492,7 @@ def answer_nine():
     Top15['PopEst'] = Top15['Energy Supply'] / Top15['Energy Supply per Capita']
     Top15['Citable docs per Capita'] = Top15['Citable documents'] / Top15['PopEst']
     return Top15['Citable docs per Capita'].corr(Top15['Energy Supply per Capita'], method='pearson')
+
 
 # In[ ]:
 
@@ -516,7 +527,8 @@ def answer_ten():
     return Top15['new01col']
 
 
-# ### Question 11 (6.6%) Use the following dictionary to group the Countries by Continent, then create a dateframe
+# ### Question 11 (6.6%)
+# Use the following dictionary to group the Countries by Continent, then create a dateframe
 # that displays the sample size (the number of countries in each continent bin), and the sum, mean, and std deviation
 #  for the estimated population of each country.
 # 
@@ -545,7 +557,48 @@ def answer_ten():
 
 def answer_eleven():
     Top15 = answer_one()
-    return "ANSWER"
+    ContinentDict = {'China': 'Asia',
+                     'United States': 'North America',
+                     'Japan': 'Asia',
+                     'United Kingdom': 'Europe',
+                     'Russian Federation': 'Europe',
+                     'Canada': 'North America',
+                     'Germany': 'Europe',
+                     'India': 'Asia',
+                     'France': 'Europe',
+                     'South Korea': 'Asia',
+                     'Italy': 'Europe',
+                     'Spain': 'Europe',
+                     'Iran': 'Asia',
+                     'Australia': 'Australia',
+                     'Brazil': 'South America'}
+
+    # add a column for estimated population for each country
+    Top15['PopEst'] = Top15['Energy Supply'] / Top15['Energy Supply per Capita']
+    # create a new column named Continent
+    Top15['Continent'] = None
+    # assign continents to each country
+    for country, continent in ContinentDict.items():
+        # print(country, continent)
+        Top15.loc[country, 'Continent'] = continent
+    # reset the index, to prep for creating a multi-level index later
+    Top15.reset_index(inplace=True)
+    # reset index would have left the countries under column label 'index', change it to 'Country'
+    Top15.rename(columns={'index': 'Country'}, inplace=True)
+    # set a multi-index: first level 'Continent' and second level 'Country'
+    Top15.set_index(['Continent', 'Country'])
+
+    res_df = pd.DataFrame(columns=['Continent', 'size', 'sum', 'mean', 'std'], dtype=np.float64)
+    res_df.set_index(['Continent'], inplace=True)
+    for group, frame in Top15.groupby('Continent'):
+        res_df.loc[group, 'size'] = np.size(frame['PopEst'])
+        res_df.loc[group, 'sum'] = np.sum(frame['PopEst'])
+        res_df.loc[group, 'mean'] = np.mean(frame['PopEst'])
+        res_df.loc[group, 'std'] = pd.DataFrame.std(frame['PopEst'])
+        print(group)
+        print(frame['PopEst'].head())
+    # print(res_df.head(n=12))
+    return res_df
 
 
 # ### Question 12 (6.6%)
@@ -574,8 +627,14 @@ def answer_twelve():
 # In[ ]:
 
 def answer_thirteen():
+    import locale
+    locale.setlocale(locale.LC_ALL, 'en_US')
     Top15 = answer_one()
-    return "ANSWER"
+    # add a column for estimated population for each country
+    Top15['PopEst'] = Top15['Energy Supply'] / Top15['Energy Supply per Capita']
+    # res = Top15['PopEst'].apply(lambda x: locale.format("%f", x, grouping=True))
+    res = Top15['PopEst'].apply(lambda x: "{:0,}".format(x))
+    return res
 
 
 # ### Optional
