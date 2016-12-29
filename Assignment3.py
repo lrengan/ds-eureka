@@ -96,25 +96,51 @@
 # http://www.scimagojr.com/countryrank.php?category=2102) from the file `scimagojr-3.xlsx`, which ranks countries
 # based on their journal contributions in the aforementioned area. Call this DataFrame **ScimEn**.
 # 
-# Join the three datasets: GDP, Energy, and ScimEn into a new dataset (using the intersection of country names). Use
-# only the last 10 years (2006-2015) of GDP data and only the top 15 countries by Scimagojr 'Rank' (Rank 1 through 15).
-# 
-# The index of this DataFrame should be the name of the country, and the columns should be ['Rank', 'Documents',
-# 'Citable documents', 'Citations', 'Self-citations', 'Citations per document', 'H index', 'Energy Supply',
-# 'Energy Supply per Capita', '% Renewable', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014',
-# '2015'].
-# 
-# *This function should return a DataFrame with 20 columns and 15 entries.*
 
-# In[ ]:
+##### More mess that needs cleaning
+# foot notes
+# 'Denmark', # 'Denmark5',
+# 'Greenland', # 'Greenland7',
+# 'Indonesia', # 'Indonesia8',
+# 'Kuwait', # 'Kuwait11',
+# 'Netherlands', # 'Netherlands Antilles' # 'Netherlands12',
+# 'Portugal', # 'Portugal13',
+# 'Saudi Arabia', # 'Saudi Arabia14',
+# 'Serbia', # 'Serbia15',
+# 'Switzerland', 'Switzerland17',
+# 'Ukraine', 'Ukraine18',
+
+# fix this? 'China, Macao Special Administrative Region4', ?
+# fix this to south korea? 'Korea, Dem. People’s Rep.'
+# 'Kyrgyz Republic', # 'Kyrgyzstan',
+# 'Lao PDR', # "Lao People's Democratic Republic",
+# 'Macao', # 'Macao SAR, China',
+# 'Macedonia', # 'Macedonia, FYR',
+# 'Micronesia', # 'Micronesia, Fed. Sts.',
+# 'Slovak Republic', # 'Slovakia',
+# 'Venezuela', 'Venezuela, RB',
+# 'Congo', # 'Congo, Dem. Rep.', # 'Congo, Rep.',
+# 'Egypt', # 'Egypt, Arab Rep.',
+# 'Viet Nam', 'Vietnam',
+# 'Yemen', 'Yemen, Rep.'
+# 'Dominica', # 'Dominican Republic',
+# 'Bahamas', # 'Bahamas, The',
+# 'Gambia', # 'Gambia, The',
+
+
+# special chars
+# 'Curacao', # 'Curaçao',
+# 'Haiti', # 'Haïti',
+# 'Reunion', # 'Réunion',
+
+# the quotes
+# "Côte d'Ivoire", # 'Côte d’Ivoire',
+# "Democratic People's Republic of Korea",
+#####
 
 import pandas as pd
 import numpy as np
 import re
-
-energy = pd.DataFrame()
-GDP = pd.DataFrame()
-ScimEn = pd.DataFrame()
 
 
 def load_energy_data():
@@ -129,8 +155,6 @@ def load_energy_data():
     # remove text in parentheses `'Bolivia (Plurinational State of)'` should be `'Bolivia'`
 
     ######
-    # Tell Python that we are going to refer to the global variable energy
-    global energy
     # exclude footer and header, and replace '...' with np.NaN
     # TODO: check if the NaN that read_excel uses is numpy's NaN
     energy = pd.read_excel('Energy Indicators.xls', skiprows=range(17), skipfooter=38, na_values='...')
@@ -153,7 +177,10 @@ def load_energy_data():
     energy.loc[uk_idx, 'Country'] = 'United Kingdom'
     hk_idx = energy[energy['Country'] == 'China, Hong Kong Special Administrative Region3'].index.values[0]
     energy.loc[hk_idx, 'Country'] = 'Hong Kong'
-    # Fix names in energy Australia1, China2, France6, Italy9, Japan10, Spain16
+    iran_idx = energy[energy['Country'] == 'Iran (Islamic Republic of)'].index.values[0]
+    energy.loc[iran_idx, 'Country'] = 'Iran'
+
+    # Remove foot note numbers from country names
     tmp_idx = energy[energy['Country'] == 'Australia1'].index.values[0]
     energy.loc[tmp_idx, 'Country'] = 'Australia'
     tmp_idx = energy[energy['Country'] == 'China2'].index.values[0]
@@ -166,25 +193,53 @@ def load_energy_data():
     energy.loc[tmp_idx, 'Country'] = 'Japan'
     tmp_idx = energy[energy['Country'] == 'Spain16'].index.values[0]
     energy.loc[tmp_idx, 'Country'] = 'Spain'
+    # 'Denmark', # 'Denmark5',
+    tmp_idx = energy[energy['Country'] == 'Denmark5'].index.values[0]
+    energy.loc[tmp_idx, 'Country'] = 'Denmark'
+    # 'Greenland', # 'Greenland7',
+    tmp_idx = energy[energy['Country'] == 'Greenland7'].index.values[0]
+    energy.loc[tmp_idx, 'Country'] = 'Greenland'
+    # 'Indonesia', # 'Indonesia8',
+    tmp_idx = energy[energy['Country'] == 'Indonesia8'].index.values[0]
+    energy.loc[tmp_idx, 'Country'] = 'Indonesia'
+    # 'Kuwait', # 'Kuwait11',
+    tmp_idx = energy[energy['Country'] == 'Kuwait11'].index.values[0]
+    energy.loc[tmp_idx, 'Country'] = 'Kuwait'
+    # 'Netherlands', # 'Netherlands Antilles' # 'Netherlands12',
+    tmp_idx = energy[energy['Country'] == 'Netherlands12'].index.values[0]
+    energy.loc[tmp_idx, 'Country'] = 'Netherlands'
+    # 'Portugal', # 'Portugal13',
+    tmp_idx = energy[energy['Country'] == 'Portugal13'].index.values[0]
+    energy.loc[tmp_idx, 'Country'] = 'Portugal'
+    # 'Saudi Arabia', # 'Saudi Arabia14',
+    tmp_idx = energy[energy['Country'] == 'Saudi Arabia14'].index.values[0]
+    energy.loc[tmp_idx, 'Country'] = 'Saudi Arabia'
+    # 'Serbia', # 'Serbia15',
+    tmp_idx = energy[energy['Country'] == 'Serbia15'].index.values[0]
+    energy.loc[tmp_idx, 'Country'] = 'Serbia'
+    # 'Switzerland', 'Switzerland17',
+    tmp_idx = energy[energy['Country'] == 'Switzerland17'].index.values[0]
+    energy.loc[tmp_idx, 'Country'] = 'Switzerland'
+    # 'Ukraine', 'Ukraine18',
+    tmp_idx = energy[energy['Country'] == 'Ukraine18'].index.values[0]
+    energy.loc[tmp_idx, 'Country'] = 'Ukraine'
 
-    # remove text in paranthesis in country names
+    # remove text in parentheses in country names
     # generate a list of country names that has a '(" in its name
     pcn_list = energy[energy['Country'].str.contains("\(")].index.values.tolist()
     # generate a list of tuples (index_value, country_name_with_text_in_paran_removed)
     ctlist = [(cidx, (re.sub(r'\([^()]*\)', '', energy.loc[cidx, 'Country']).rstrip())) for cidx in pcn_list]
     # replace country names with parentheses with their names with text in paran removed
     for c in ctlist:
-        energy.loc[c[0], 'Country'] = c[1]
+        energy.loc[c[0], 'Country'] = c[1].rstrip()
         # end for ctlist
 
+    return energy
 # end load_energy_data()
 
 
 # GDP data
-
 def load_GDP_data():
-    # Tell Python that we are referring to the global GDB dataframe variable
-    global GDP
     # read in the data and skip the header (first 4 rows)
     GDP = pd.read_csv('world_bank.csv', skiprows=range(4))
     # rename countries
@@ -198,26 +253,52 @@ def load_GDP_data():
     hk_idx = GDP[GDP['Country Name'] == 'Hong Kong SAR, China'].index.values[0]
     GDP.loc[hk_idx, 'Country Name'] = 'Hong Kong'
 
-
+    return GDP
 # end load_GDP_data()
 
 
 # ScimEn data
-
 def load_ScimEn_data():
-    # Tell Python that we are referring to the global ScimEn datafram variable
-    global ScimEn
     ScimEn = pd.read_excel('scimagojr-3.xlsx')
     # print(ScimEn.head())
 
-
+    return ScimEn
 # end load_ScimEn_data()
+
+
+def validate_clean_up():
+    GDP = load_GDP_data()
+    energy = load_energy_data()
+    ScimEn = load_ScimEn_data()
+    gcn_s = set(GDP['Country Name'].tolist())
+    ecn_s = set(energy['Country'].tolist())
+    scn_s = set(ScimEn['Country'].tolist())
+    eug = ecn_s.union(gcn_s)
+    eugus = eug.union(scn_s)
+    eing = ecn_s.intersection(gcn_s)
+    eingins = eing.intersection(scn_s)
+    print(len(eugus), len(eingins))
+    return True
+# end validate_clean_up()
+
+
+# Join the three datasets: GDP, Energy, and ScimEn into a new dataset (using the intersection of country names). Use
+# only the last 10 years (2006-2015) of GDP data and only the top 15 countries by Scimagojr 'Rank' (Rank 1 through 15).
+#
+# The index of this DataFrame should be the name of the country, and the columns should be ['Rank', 'Documents',
+# 'Citable documents', 'Citations', 'Self-citations', 'Citations per document', 'H index', 'Energy Supply',
+# 'Energy Supply per Capita', '% Renewable', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014',
+# '2015'].
+#
+# *This function should return a DataFrame with 20 columns and 15 entries.*
+
+# In[ ]:
 
 def answer_one():
     # load all data
-    load_energy_data()
-    load_GDP_data()
-    load_ScimEn_data()
+    energy = load_energy_data()
+    GDP = load_GDP_data()
+    ScimEn = load_ScimEn_data()
 
     sci_df = ScimEn.nsmallest(n=15, columns='Rank')
     sci_df.set_index(keys='Country', inplace=True)
@@ -253,8 +334,42 @@ def answer_one():
 
 # In[ ]:
 
+
 def answer_two():
-    return "ANSWER"
+    # load all data
+    GDP = load_GDP_data()
+    energy = load_energy_data()
+    ScimEn = load_ScimEn_data()
+
+    sci_df = ScimEn.set_index(keys='Country')
+    gdp_df = GDP.set_index(keys='Country Name')
+    energy_df = energy.set_index(keys='Country')
+
+    # outer merge
+    outer_sci_energy_df = pd.merge(sci_df, energy_df, how='outer', left_index=True, right_index=True)
+    outer_sci_energy_gdp_df = pd.merge(outer_sci_energy_df, gdp_df, how='outer', left_index=True, right_index=True)
+    outer_join_count = outer_sci_energy_gdp_df.shape[0]
+
+    # inner merge
+    sci_energy_df = pd.merge(sci_df, energy_df, how='inner', left_index=True, right_index=True)
+    sci_energy_gdp_df = pd.merge(sci_energy_df, gdp_df, how='inner', left_index=True, right_index=True)
+    inner_join_count = sci_energy_gdp_df.shape[0]
+    # old answer 176, correct answer = 156? # inner_join_count = 162?
+    # print("Using merge/joins:", "Union: ", outer_join_count, "Intersection: ", inner_join_count)
+
+    # GDP = load_GDP_data()
+    # energy = load_energy_data()
+    # ScimEn = load_ScimEn_data()
+    # gcn_s = set(GDP['Country Name'].tolist())
+    # ecn_s = set(energy['Country'].tolist())
+    # scn_s = set(ScimEn['Country'].tolist())
+    # eug = ecn_s.union(gcn_s)
+    # eugus = eug.union(scn_s)
+    # eing = ecn_s.intersection(gcn_s)
+    # eingins = eing.intersection(scn_s)
+    # print("Using set ops:", "Union: ", len(eugus), "Intersection: ", len(eingins))
+
+    return outer_join_count - inner_join_count
 
 
 # ### Question 3 (6.6%)
@@ -267,8 +382,10 @@ def answer_two():
 
 def answer_three():
     Top15 = answer_one()
-    return "ANSWER"
-
+    gdp_df = Top15[[str(i) for i in range(2006, 2016)]]
+    gg = gdp_df.apply(np.average, axis=1)
+    ggsorted = gg.sort_values(na_position='last', ascending=False)
+    return ggsorted
 
 # ### Question 4 (6.6%)
 # By how much had the GDP changed over the 10 year span for the country with the 6th largest average GDP?
@@ -278,8 +395,16 @@ def answer_three():
 # In[ ]:
 
 def answer_four():
+    # get the top15 sorted by average GDP
+    top15gdp = answer_three()
+    # get the sixth country in the list
+    sixth = top15gdp.index.values[5]
     Top15 = answer_one()
-    return "ANSWER"
+    sixth_gdp = Top15.loc[sixth][[str(i) for i in range(2006, 2016)]]
+    # apparently the answer is the difference between the GDP on 2015 and 2006!
+    # print(sixth_gdp.max(), sixth_gdp.min())
+    # return sixth_gdp.max() - sixth_gdp.min()
+    return sixth_gdp['2015'] - sixth_gdp['2006']
 
 
 # ### Question 5 (6.6%)
@@ -291,7 +416,7 @@ def answer_four():
 
 def answer_five():
     Top15 = answer_one()
-    return "ANSWER"
+    return Top15['Energy Supply per Capita'].mean()
 
 
 # ### Question 6 (6.6%)
@@ -303,7 +428,9 @@ def answer_five():
 
 def answer_six():
     Top15 = answer_one()
-    return "ANSWER"
+    mpc = Top15['% Renewable'].nlargest(n=1)
+    res = (mpc.index[0], mpc.values[0])
+    return res
 
 
 # ### Question 7 (6.6%)
@@ -316,7 +443,10 @@ def answer_six():
 
 def answer_seven():
     Top15 = answer_one()
-    return "ANSWER"
+    cratio = Top15['Self-citations'] / Top15['Citations']
+    crtop = cratio.nlargest(n=1)
+    res = (crtop.index[0], crtop.values[0])
+    return res
 
 
 # ### Question 8 (6.6%)
@@ -330,8 +460,11 @@ def answer_seven():
 
 def answer_eight():
     Top15 = answer_one()
-    return "ANSWER"
-
+    # espc = es / pop
+    # pop = es / espc
+    pop = Top15['Energy Supply'] / Top15['Energy Supply per Capita']
+    pps = pop.sort_values(ascending=False)
+    return pps.index[2]
 
 # ### Question 9
 # Create a column that estimates the number of citable documents per person. 
@@ -345,8 +478,9 @@ def answer_eight():
 
 def answer_nine():
     Top15 = answer_one()
-    return "ANSWER"
-
+    Top15['PopEst'] = Top15['Energy Supply'] / Top15['Energy Supply per Capita']
+    Top15['Citable docs per Capita'] = Top15['Citable documents'] / Top15['PopEst']
+    return Top15['Citable docs per Capita'].corr(Top15['Energy Supply per Capita'], method='pearson')
 
 # In[ ]:
 
@@ -374,7 +508,10 @@ def plot9():
 
 def answer_ten():
     Top15 = answer_one()
-    return "ANSWER"
+    Top15.sort_values(by='Rank', inplace=True)
+    renew_median = Top15['% Renewable'].median()
+    Top15['new01col'] = Top15['% Renewable'].apply(lambda x: 1 if x >= renew_median else 0)
+    return Top15['new01col']
 
 
 # ### Question 11 (6.6%)
