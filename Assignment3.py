@@ -466,13 +466,14 @@ def answer_eight():
     pps = pop.sort_values(ascending=False)
     return pps.index[2]
 
-# ### Question 9
-# Create a column that estimates the number of citable documents per person. 
-# What is the correlation between the number of citable documents per capita and the energy supply per capita? Use the `.corr()` method, (Pearson's correlation).
+# ### Question 9 Create a column that estimates the number of citable documents per person. What is the correlation
+# between the number of citable documents per capita and the energy supply per capita? Use the `.corr()` method,
+# (Pearson's correlation).
 # 
 # *This function should return a single number.*
 # 
-# *(Optional: Use the built-in function `plot9()` to visualize the relationship between Energy Supply per Capita vs. Citable docs per Capita)*
+# *(Optional: Use the built-in function `plot9()` to visualize the relationship between Energy Supply per Capita vs.
+# Citable docs per Capita)*
 
 # In[ ]:
 
@@ -499,10 +500,11 @@ def plot9():
 # plot9() # Be sure to comment out plot9() before submitting the assignment!
 
 
-# ### Question 10 (6.6%)
-# Create a new column with a 1 if the country's % Renewable value is at or above the median for all countries in the top 15, and a 0 if the country's % Renewable value is below the median.
+# ### Question 10 (6.6%) Create a new column with a 1 if the country's % Renewable value is at or above the median
+# for all countries in the top 15, and a 0 if the country's % Renewable value is below the median.
 # 
-# *This function should return a series named `HighRenew` whose index is the country name sorted in ascending order of rank.*
+# *This function should return a series named `HighRenew` whose index is the country name sorted in ascending order
+# of rank.*
 
 # In[ ]:
 
@@ -514,8 +516,9 @@ def answer_ten():
     return Top15['new01col']
 
 
-# ### Question 11 (6.6%)
-# Use the following dictionary to group the Countries by Continent, then create a dateframe that displays the sample size (the number of countries in each continent bin), and the sum, mean, and std deviation for the estimated population of each country.
+# ### Question 11 (6.6%) Use the following dictionary to group the Countries by Continent, then create a dateframe
+# that displays the sample size (the number of countries in each continent bin), and the sum, mean, and std deviation
+#  for the estimated population of each country.
 # 
 # ```python
 # ContinentDict  = {'China':'Asia', 
@@ -535,7 +538,8 @@ def answer_ten():
 #                   'Brazil':'South America'}
 # ```
 # 
-# *This function should return a DataFrame with index named Continent `['Asia', 'Australia', 'Europe', 'North America', 'South America']` and columns `['size', 'sum', 'mean', 'std']`*
+# *This function should return a DataFrame with index named Continent `['Asia', 'Australia', 'Europe',
+# 'North America', 'South America']` and columns `['size', 'sum', 'mean', 'std']`*
 
 # In[ ]:
 
@@ -545,9 +549,11 @@ def answer_eleven():
 
 
 # ### Question 12 (6.6%)
-# Cut % Renewable into 5 bins. Group Top15 by the Continent, as well as these new % Renewable bins. How many countries are in each of these groups?
+# Cut % Renewable into 5 bins. Group Top15 by the Continent, as well as these new % Renewable
+# bins. How many countries are in each of these groups?
 # 
-# *This function should return a Series with a MultiIndex of `Continent`, then the bins for `% Renewable`. Do not include groups with no countries.*
+# *This function should return a Series with a MultiIndex of `Continent`, then the bins for `% Renewable`. Do not
+# include groups with no countries.*
 
 # In[ ]:
 
@@ -557,11 +563,13 @@ def answer_twelve():
 
 
 # ### Question 13 (6.6%)
-# Convert the Population Estimate series to a string with thousands separator (using commas). Use all significant digits (do not round the results).
+# Convert the Population Estimate series to a string with thousands separator (using commas).
+# Use all significant digits (do not round the results).
 # 
 # e.g. 12345678.90 -> 12,345,678.90
 # 
-# *This function should return a Series `PopEst` whose index is the country name and whose values are the population estimate string.*
+# *This function should return a Series `PopEst` whose index is the country name and whose values are the population
+# estimate string.*
 
 # In[ ]:
 
