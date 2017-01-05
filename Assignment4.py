@@ -64,14 +64,78 @@ states = {'OH': 'Ohio', 'KY': 'Kentucky', 'AS': 'American Samoa', 'NV': 'Nevada'
 
 # In[ ]:
 
+def read_univ_towns_data():
+    f = open('university_towns.txt', "r")
+    lines = f.readlines()
+    f.close()
+    return lines
+
+
+# end read_univ_towns_data()
+
 def get_list_of_university_towns():
     '''Returns a DataFrame of towns and the states they are in from the 
     university_towns.txt list. The format of the DataFrame should be:
     DataFrame( [ ["Michigan","Ann Arbor"], ["Michigan", "Yipsilanti"] ], 
     columns=["State","RegionName"]  )'''
 
-    return "ANSWER"
+    import re
+    f = open('university_towns.txt', "r")
+    lines = f.readlines()
+    f.close()
 
+    # remove the '\n' at the end of each line
+    ll = [i.rstrip() for i in lines]
+
+    # create an empty list to collect [state_name, region_name] tuples
+    stlist = []
+    stname = ''
+    num_states = 0
+    for x in ll:
+        # check if x is a state name line, e.g.:'Alabama[edit]'
+        if '[edit]' in x:
+            # set current_st_name to x without the '[edit]'
+            spos = x.find('[edit]')
+            if spos >= 0:
+                stname = x[0:spos]
+            else:
+                stname = x
+            stname.rstrip()
+            num_states += 1
+            # move to next item
+            continue
+        else:  # x is a univ town or region name, e.g., 'Jacksonville (Jacksonville State University)[2]'
+            # extract the region name, e.g., 'Jacksonville'
+            spos = x.find('(')
+            if spos >= 0:
+                rname = x[0:spos]
+            else:
+                rname = x
+            # TODO: why isn't rstrip() working on rname variable?
+            rname = re.sub('\s+$', '', rname)
+        if len(stname) == 0:
+            raise AssertionError('State name should be set before processing regions')
+        stlist.append([stname, rname])
+
+    df = pd.DataFrame(stlist, columns=["State", "RegionName"])
+    # print(num_states)
+    return df
+
+
+def tst_function1():
+    df = get_list_of_university_towns()
+    print('Shape test: ', "Passed" if df.shape == (517, 2) else 'Failed')
+    print('Index test: ', "Passed" if df.index.tolist() == list(range(517)) else 'Failed')
+    print('Column test: ', "Passed" if df.columns.tolist() == ['State', 'RegionName'] else 'Failed')
+    print('\\n test: ', "Passed" if len(df[df['State'].str.contains('\n') | df[
+        'RegionName'].str.contains('\n')].values) == 0 else 'Failed')
+    print('Trailing whitespace test:', "Passed" if len(df[df['State'].str.contains(
+        '\s+$') | df['RegionName'].str.contains('\s+$')].values) == 0 else 'Failed')
+    print('{"(","["} test:', "Passed" if len(df[df['State'].str.contains(
+        '\(|\[') | df['RegionName'].str.contains('\(|\]')].values) == 0 else 'Failed')
+
+
+# end tst_function1()
 
 # In[ ]:
 
