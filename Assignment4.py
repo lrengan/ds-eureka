@@ -160,6 +160,8 @@ def load_gdp_data():
     df['GDP_diff'] = df.diff()
 
     return df
+
+
 # end load_gdp_data()
 
 
@@ -223,16 +225,29 @@ def get_recession_end():
 
     return recession_end
 
-# In[ ]:
 
 def get_recession_bottom():
     '''Returns the year and quarter of the recession bottom time as a 
     string value in a format such as 2005q3'''
+    df = load_gdp_data()
+    dfnew = df[get_recession_start(): get_recession_end()]
+    return dfnew['GDP'].idxmin()
 
-    return "ANSWER"
 
+def gen_year_month_list():
+    # xx = pd.date_range(start='2000-1-1', end='2016-12-31', freq='M')
+    # ll = "{}-{%2d}".format(x.date().year, x.date().month) for x in xx ]
 
-# In[ ]:
+    years = [x for x in range(2000, 2017)]
+    months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+    ll = []
+    for y in years:
+        for m in months:
+            ll.append("{}-{}".format(y,m))
+    # data available only for first 8 months of 2016, so chop of the last four months
+    ll = ll[:-4]
+    return ll
+
 
 def convert_housing_data_to_quarters():
     '''Converts the housing data to quarters and returns it as mean 
@@ -245,9 +260,34 @@ def convert_housing_data_to_quarters():
     
     The resulting dataframe should have 67 columns, and 10,730 rows.
     '''
+    # read in data
+    df = pd.read_csv('City_Zhvi_AllHomes.csv')
 
-    return "ANSWER"
+    # Compute housing data for quarters from monthly data
+    # Algo:
+    # 1. change column names to datetime objects so that we can resample
+    # 2. transpose => resample() => use mean to reduce the samples for quarters => transpose
+    ll = gen_year_month_list()
+    xdf = df[ll]
+    date_cols = pd.date_range(start='2000-1-1', end='2016-08-31', freq='M')
+    xdf.columns = date_cols
+    sampled_df = xdf.T.resample('Q').mean().T
 
+    # copy over the RegionName and State from original data
+    sampled_df['RegionName'] = df['RegionName']
+    # expand state names using states dict
+    llx = []
+    for index, row in df.iterrows():
+        llx.append(states[row['State']])
+    sampled_df['State'] = llx
+    sampled_df.set_index(['State', 'RegionName'], inplace=True)
+
+    # changed column names to yearquater (e.g. 2000q1) format
+    sampled_df.columns = ["{:}q{:}".format(x.year, x.quarter) for x in sampled_df.columns.values]
+
+    return sampled_df
+
+# end convert_housing_data_to_quarters()
 
 # In[ ]:
 
