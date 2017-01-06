@@ -165,6 +165,18 @@ def load_gdp_data():
 # end load_gdp_data()
 
 
+# expects y to in the YYYYqN format. e.g. 2000q1
+def get_prev_quater(y):
+        # if it is the first quarter, then decrement year and set quarter to 4
+        if y[-1] is '1':
+            year = str(int(y[0:4]) - 1)
+            quarter = 'q4'
+            return year + quarter
+        else:
+            qd = str(int(y[-1]) - 1)
+        return y[0:5] + qd
+
+
 def get_recession_start():
     '''Returns the year and quarter of the recession start time as a 
     string value in a format such as 2005q3'''
@@ -289,7 +301,6 @@ def convert_housing_data_to_quarters():
 
 # end convert_housing_data_to_quarters()
 
-# In[ ]:
 
 def run_ttest():
     '''First creates new data showing the decline or growth of housing prices
@@ -305,5 +316,14 @@ def run_ttest():
     value for better should be either "university town" or "non-university town"
     depending on which has a lower mean price ratio (which is equivilent to a
     reduced market loss).'''
+
+    # create PriceRatio column in housing data
+    recstart = get_recession_start()
+    recstart_prev = get_prev_quater(recstart)
+    recbottom = get_recession_bottom()
+    housing_q = convert_housing_data_to_quarters()
+    housing_q['PriceRatio'] = housing_q[recstart_prev] / housing_q[recbottom]
+
+    #
 
     return "ANSWER"
