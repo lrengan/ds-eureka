@@ -20,11 +20,14 @@ from scipy.stats import ttest_ind
 # and tag them as pandas and python related. And of course, the discussion forums are open for interaction with your
 # peers and the course staff.
 # 
-# Definitions: * A _quarter_ is a specific three month period, Q1 is January through March, Q2 is April through June,
-#  Q3 is July through September, Q4 is October through December. * A _recession_ is defined as starting with two
-# consecutive quarters of GDP decline, and ending with two consecutive quarters of GDP growth. * A _recession bottom_
-#  is the quarter within a recession which had the lowest GDP. * A _university town_ is a city which has a high
-# percentage of university students compared to the total population of the city.
+# Definitions:
+# * A _quarter_ is a specific three month period, Q1 is January through March, Q2 is April through June,
+#   Q3 is July through September, Q4 is October through December.
+# * A _recession_ is defined as starting with two consecutive quarters of GDP decline, and ending with
+#   two consecutive quarters of GDP growth.
+# * A _recession bottom_ is the quarter within a recession which had the lowest GDP.
+# * A _university town_ is a city which has a high percentage of university students compared to the total
+#   population of the city.
 # 
 # **Hypothesis**: University towns have their mean housing prices less effected by recessions. Run a t-test to
 # compare the ratio of the mean price of houses in university towns the quarter before the recession starts compared
@@ -139,21 +142,86 @@ def tst_function1():
 
 # In[ ]:
 
+# data extract
+# 2008q3   14891.6     -71.8
+# 2008q4   14577.0    -314.6
+# 2009q1   14375.0    -202.0
+# 2009q2   14355.6     -19.4
+# 2009q3   14402.5      46.9
+# 2009q4   14541.9     139.4
+
+def load_gdp_data():
+    df = pd.read_excel('gdplev.xls', skiprows=range(8), header=None)
+    df = df[[4, 6]]
+    df.columns = ['Quarter', 'GDP']
+    df.set_index('Quarter', inplace=True)
+    df = df.loc['2000q1': '2016q2']
+
+    df['GDP_diff'] = df.diff()
+
+    return df
+# end load_gdp_data()
+
+
 def get_recession_start():
     '''Returns the year and quarter of the recession start time as a 
     string value in a format such as 2005q3'''
 
-    return "ANSWER"
+    # assumes that 'GDP_diff' column is computed in load_gdp_data()
+    # finds the first two consecutive negative values in GDP_diff column and
+    # interprets it as the recession start. Return the index for the first
+    # (of the two consecutive) quarter when the negative value was found.
+    df = load_gdp_data()
+    prev_row = None
+    prev_index = None
+    recession_start = None
+    for curr_index, curr_row in df.iterrows():
+        if prev_row is not None:
+            if curr_row['GDP_diff'] < 0 and prev_row['GDP_diff'] < 0:
+                recession_start = prev_index
+                break  # found recession start, so break out of loop
+            else:  # move to next row
+                prev_row = curr_row
+                prev_index = curr_index
+        else:  # first row
+            prev_row = curr_row
+            prev_index = curr_index
+    # end of the for iterrows()
+
+    return recession_start
 
 
 # In[ ]:
 
 def get_recession_end():
-    '''Returns the year and quarter of the recession end time as a 
+    '''Returns the year and quarter of the recession end time as a
     string value in a format such as 2005q3'''
 
-    return "ANSWER"
+    df = load_gdp_data()
+    rs = get_recession_start()
+    dfnew = df.loc[rs:]
 
+    # assumes that 'GDP_diff' column is computed in load_gdp_data()
+    # finds the first two consecutive positive values in GDP_diff column and
+    # interprets it as the recession end. Return the index for the first
+    # (of the two consecutive) quarter when the positive value was found.
+    prev_row = None
+    prev_index = None
+    recession_end = None
+    for curr_index, curr_row in dfnew.iterrows():
+        if prev_row is not None:
+            if curr_row['GDP_diff'] >= 0 and prev_row['GDP_diff'] >= 0:
+                recession_end = curr_index
+                break  # found recession end, so break out of loop
+            else:  # move to next row
+                prev_row = curr_row
+                prev_index = curr_index
+        else:  # first row
+            prev_row = curr_row
+            prev_index = curr_index
+    # end of the for iterrows()
+
+    return recession_end
 
 # In[ ]:
 
