@@ -317,6 +317,15 @@ def run_ttest():
     depending on which has a lower mean price ratio (which is equivilent to a
     reduced market loss).'''
 
+    # PR : housing_price_before recession / housing price at recession bottom
+    # nut : PR mean : 1.08
+    # ut : PR mean 1.05
+    # Hyp: ut are less affected by recession => housing price decrease is lesser for ut than nut
+    # NP : no diff between groups
+
+
+    from scipy import stats
+
     # create PriceRatio column in housing data
     recstart = get_recession_start()
     recstart_prev = get_prev_quater(recstart)
@@ -324,6 +333,41 @@ def run_ttest():
     housing_q = convert_housing_data_to_quarters()
     housing_q['PriceRatio'] = housing_q[recstart_prev] / housing_q[recbottom]
 
-    #
+    # create DF for university towns with PriceRatio data
+    housing_pr = housing_q[[recstart, recstart_prev, recbottom, 'PriceRatio']]
+    # housing_pr already has the right multi-level index (State, RegionName)
 
-    return "ANSWER"
+    ut_df = get_list_of_university_towns()
+    ut_df.set_index(['State', 'RegionName'], inplace=True)
+
+    ut_pr = pd.merge(ut_df, housing_pr, how='left', left_index=True, right_index=True)
+
+    # create a DF for non university towns with PriceRation data
+    ut_s = set(ut_df.index.tolist())
+    housing_pr_s = set(housing_pr.index.tolist())
+    non_univ_towns = housing_pr_s.difference(ut_s)
+    nut_df = pd.DataFrame(list(non_univ_towns), columns=['State', 'RegionName'])
+    nut_df.set_index(['State', 'RegionName'], inplace=True)
+    nut_pr = pd.merge(nut_df, housing_pr, how='left', left_index=True, right_index=True)
+
+    # do the ttest
+    # scipy.stats.ttest_ind(a, b, axis=0, equal_var=True, nan_policy='propagate'
+    ttest_result = ttest_ind(a=nut_pr['PriceRatio'], b=ut_pr['PriceRatio'], nan_policy='omit')
+    if ttest_result.pvalue < 0.01:
+        different = True  # reject Null hypothesis
+    else:
+        different = False  # can't reject Null hypothesis
+
+    #  compare mean price ratios
+    # s1 = "pd.Series.mean - nut {} ut {}".format(nut_pr['PriceRatio'].mean(), ut_pr['PriceRatio'].mean())
+    # s2 = "np.mean - - nut {} ut {}".format(np.mean(nut_pr['PriceRatio']), np.mean(ut_pr['PriceRatio']))
+    # print(s1)
+    # print(s2)
+    if nut_pr['PriceRatio'].mean() < ut_pr['PriceRatio'].mean():
+        better = 'non-university town'
+    else:
+        better = 'university town'
+
+    ret_val = (different, ttest_result.pvalue, better)
+
+    return ret_val
